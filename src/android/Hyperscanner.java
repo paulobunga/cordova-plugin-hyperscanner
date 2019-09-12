@@ -93,7 +93,8 @@ public class Hyperscanner extends CordovaPlugin {
     }
 
     public void logResult(String body) {
-        //Toast.makeText(cordova.getActivity(), body, Toast.LENGTH_SHORT).show();
+        
+        Toast.makeText(cordova.getActivity(), body, Toast.LENGTH_SHORT).show();
 
         PluginResult result = new PluginResult(PluginResult.Status.OK, body);
         result.setKeepCallback(true);
