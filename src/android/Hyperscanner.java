@@ -26,9 +26,9 @@ public class Hyperscanner extends CordovaPlugin {
 
     private CallbackContext PUBLIC_CALLBACK = null;
 
-    cordova.plugin.hyperscanner.BarcodeScanner barcodeScanner;
+    private BarcodeScanner barcodeScanner;
 
-    cordova.plugin.hyperscanner.RFIDScanner rfidScanner;
+    private RFIDScanner rfidScanner;
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -42,9 +42,15 @@ public class Hyperscanner extends CordovaPlugin {
         pref = cordova.getActivity().getSharedPreferences("BIGBOXAFRICA", Context.MODE_PRIVATE);
         editor = pref.edit();
 
-        barcodeScanner = new cordova.plugin.hyperscanner.BarcodeScanner(cordova.getActivity(), new cordova.plugin.hyperscanner.BarcodeScanner.OnScannerCallback() {
+        barcodeScanner = new BarcodeScanner(cordova.getActivity(), new BarcodeScanner.OnScannerCallback() {
             @Override
             public void success(String barcode) {
+
+                PluginResult result = new PluginResult(PluginResult.Status.OK, barcode);
+                result.setKeepCallback(true);
+
+                PUBLIC_CALLBACK.sendPluginResult(result);
+
                 logResult(barcode);
             }
 
@@ -54,7 +60,7 @@ public class Hyperscanner extends CordovaPlugin {
             }
         });
 
-        rfidScanner = new cordova.plugin.hyperscanner.RFIDScanner(cordova.getActivity(), new cordova.plugin.hyperscanner.RFIDScanner.OnScannerCallback() {
+        rfidScanner = new RFIDScanner(cordova.getActivity(), new RFIDScanner.OnScannerCallback() {
             @Override
             public void success(String rfidtag) {
                 logResult(rfidtag);
@@ -95,12 +101,6 @@ public class Hyperscanner extends CordovaPlugin {
     public void logResult(String body) {
         
         Toast.makeText(cordova.getActivity(), body, Toast.LENGTH_SHORT).show();
-
-        PluginResult result = new PluginResult(PluginResult.Status.OK, body);
-        result.setKeepCallback(true);
-
-        PUBLIC_CALLBACK.sendPluginResult(result);
-        return;
 
     }
 
