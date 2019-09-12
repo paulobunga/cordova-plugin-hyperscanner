@@ -14,6 +14,10 @@ import android.widget.Toast;
 
 import android.content.SharedPreferences;
 
+
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+
 /**
  * This class echoes a string called from JavaScript.
  */
