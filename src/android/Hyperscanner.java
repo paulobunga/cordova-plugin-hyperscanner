@@ -3,7 +3,6 @@ package cordova.plugin.hyperscanner;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 
-import org.apache.cordova.Plugin;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.CallbackContext;
 
