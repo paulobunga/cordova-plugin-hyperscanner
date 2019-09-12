@@ -2,6 +2,9 @@ package cordova.plugin.hyperscanner;
 
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+
+import org.apache.cordova.Plugin;
+import org.apache.cordova.PluginResult;
 import org.apache.cordova.CallbackContext;
 
 import org.apache.cordova.CordovaWebView;
@@ -13,10 +16,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import android.content.SharedPreferences;
-
-
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -88,11 +87,21 @@ public class Hyperscanner extends CordovaPlugin {
 
         }
 
+        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+        result.setKeepCallback(true);
+
         return true;
     }
 
     public void logResult(String body) {
-        Toast.makeText(cordova.getActivity(), body, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(cordova.getActivity(), body, Toast.LENGTH_SHORT).show();
+
+        PluginResult result = new PluginResult(PluginResult.Status.OK, body);
+        result.setKeepCallback(true);
+
+        PUBLIC_CALLBACK.sendPluginResult(result);
+        return;
+
     }
 
     @Override
@@ -107,8 +116,4 @@ public class Hyperscanner extends CordovaPlugin {
             barcodeScanner = null;
         }
     }
-
-
-
-    
 }
