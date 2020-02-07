@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import android.content.SharedPreferences;
@@ -21,13 +22,18 @@ import android.content.SharedPreferences;
  */
 public class Hyperscanner extends CordovaPlugin {
 
-    private static final String ACTION_SCAN_BARCODE = "scanBarcode";
-    private static final String ACTION_SCAN_RFID = "scanRFIDcode";
+    private static final String ACTION_TRIGGER_DOWN = "registerKeyDown";
+    private static final String ACTION_TRIGGER_UP = "registerKeyUp";
+    private static final String ACTION_START_RFID = "startRFIDScanner";
+    private static final String ACTION_STOP_RFID = "stopRFIDScanner";
+    private static final String ACTION_START_BARCODE = "startBarcodeScanner";
+    private static final String ACTION_STOP_BARCODE = "stopBarcodeScanner";
 
+    private CallbackContext KEYUP_CALLBACK = null;
+    private CallbackContext KEYDOWN_CALLBACK = null;
     private CallbackContext PUBLIC_CALLBACK = null;
 
     private BarcodeScanner barcodeScanner;
-
     private RFIDScanner rfidScanner;
 
     SharedPreferences pref;
@@ -37,40 +43,9 @@ public class Hyperscanner extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
         
-        //logResult("Initialise stuff here");
-
         pref = cordova.getActivity().getSharedPreferences("BIGBOXAFRICA", Context.MODE_PRIVATE);
         editor = pref.edit();
 
-        barcodeScanner = new BarcodeScanner(cordova.getActivity(), new BarcodeScanner.OnScannerCallback() {
-            @Override
-            public void success(String barcode) {
-
-                PluginResult result = new PluginResult(PluginResult.Status.OK, barcode);
-                result.setKeepCallback(true);
-
-                PUBLIC_CALLBACK.sendPluginResult(result);
-
-                logResult(barcode);
-            }
-
-            @Override
-            public void error(String error) {
-                logResult(error);
-            }
-        });
-
-        rfidScanner = new RFIDScanner(cordova.getActivity(), new RFIDScanner.OnScannerCallback() {
-            @Override
-            public void success(String rfidtag) {
-                logResult(rfidtag);
-            }
-
-            @Override
-            public void error(String error) {
-                logResult(error);
-            }
-        });
     }
 
     @Override
@@ -78,22 +53,22 @@ public class Hyperscanner extends CordovaPlugin {
 
         PUBLIC_CALLBACK = callbackContext;
 
-        if (ACTION_SCAN_BARCODE.equals(action)) {
-
-            // logResult("You can now scan barcodes");
-
-            barcodeScanner.startScan();
-
-        } else if (ACTION_SCAN_RFID.equals(action)) {
-
-            //logResult("You can now scan RFID Tags");
-
-            rfidScanner.startScan("single");
-
-        }
-
         PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
         result.setKeepCallback(true);
+
+        if (action.equalsIgnoreCase(ACTION_TRIGGER_DOWN)) {
+            Log.d("Hyperscanner", "Action trigger down");
+        } else if (action.equalsIgnoreCase(ACTION_TRIGGER_UP)) {
+            Log.d("Hyperscanner", "Action trigger up");
+        } else if (action.equalsIgnoreCase(ACTION_START_RFID)) {
+            Log.d("Hyperscanner", "Action start RFID");
+        } else if (action.equalsIgnoreCase(ACTION_STOP_RFID)) {
+            Log.d("Hyperscanner", "Action stop RFID");
+        } else if (action.equalsIgnoreCase(ACTION_START_BARCODE)) {
+            Log.d("Hyperscanner", "Action start Barcode Scanner");
+        } else if (action.equalsIgnoreCase(ACTION_STOP_BARCODE)) {
+            Log.d("Hyperscanner", "Action stop Barcode scanner");
+        }
 
         return true;
     }
@@ -107,16 +82,43 @@ public class Hyperscanner extends CordovaPlugin {
 
     }
 
-    @Override
-    public void onDestroy(){
-        this.destroyScanner();
-        super.onDestroy();
+    public void startBarcodeScanner() {
+        if(barcodeScanner ==  null) {
+            barcodeScanner = new BarcodeScanner(cordova.getActivity(), new BarcodeScanner.OnScannerCallback() {
+                @Override
+                public void success(String barcode) {
+                    logResult(barcode);
+                }
+    
+                @Override
+                public void error(String error) {
+                    logResult(error);
+                }
+            });
+        }
     }
 
-    public void destroyScanner() {
-        if(barcodeScanner != null) {
-            barcodeScanner.destroy();
-            barcodeScanner = null;
+    public void startRFIDScanner() {
+        if (rfidScanner == null) {
+            rfidScanner = new RFIDScanner(cordova.getActivity(), new RFIDScanner.OnScannerCallback() {
+                @Override
+                public void success(String rfidtag) {
+                    logResult(rfidtag);
+                }
+    
+                @Override
+                public void error(String error) {
+                    logResult(error);
+                }
+            });
         }
+    }
+
+    public void stopRFIDScanner() {
+
+    }
+
+    public void stopBarcodeScanner() {
+
     }
 }

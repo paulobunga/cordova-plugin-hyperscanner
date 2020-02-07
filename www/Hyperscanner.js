@@ -1,10 +1,28 @@
 var exec = require('cordova/exec');
 
-exports.scanBarcode = function (success, error) {
-    exec(success, error, 'Hyperscanner', 'scanBarcode');
-};
+module.exports = {
 
+    registerKeyDown: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'registerKeyDown');
+    },
 
-exports.scanRFIDcode = function (success, error) {
-    exec(success, error, 'Hyperscanner', 'scanRFIDcode');
-};
+    registerKeyUp: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'registerKeyUp');
+    },
+
+    startRFIDScanner: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'startRFIDScanner');
+    },
+
+    stopRFIDScanner: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'stopRFIDScanner');
+    },
+
+    startBarcodeScanner: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'startBarcodeScanner');
+    },
+
+    stopBarcodeScanner: function (success, error) {
+        exec(success, error, 'Hyperscanner', 'stopBarcodeScanner');
+    }
+}
